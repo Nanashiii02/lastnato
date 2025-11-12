@@ -30,7 +30,8 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
       try {
         await _authService.sendPasswordResetEmail(_emailController.text);
         setState(() {
-          _infoMessage = 'Password reset email sent. Please check your inbox (and spam folder).';
+          _infoMessage =
+              'Password reset email sent. Please check your inbox (and spam folder).';
         });
       } on FirebaseAuthException catch (e) {
         String message;
@@ -66,10 +67,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 children: [
                   const Text(
                     'FORGOT PASSWORD',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -87,7 +85,9 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
-                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      } else if (!RegExp(
+                        r'^[^@]+@[^@]+\.[^@]+',
+                      ).hasMatch(value)) {
                         return 'Please enter a valid email address';
                       }
                       return null;
@@ -100,7 +100,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: Text(
                         _infoMessage!,
-                        style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -109,7 +112,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: Text(
                         _errorMessage!,
-                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -128,7 +134,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             onPressed: _sendPasswordResetEmail,
                             child: const Text(
                               'RESET',
-                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

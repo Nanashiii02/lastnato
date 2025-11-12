@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,15 +9,12 @@ import 'forgot_password_page.dart';
 import 'home_page.dart';
 import 'journal_page.dart';
 import 'login_page.dart';
-import 'presence_service.dart';
 import 'registration_page.dart';
 import 'weather_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -26,10 +24,7 @@ final _router = GoRouter(
       path: '/',
       builder: (context, state) => const AuthGate(),
       routes: [
-        GoRoute(
-          path: 'login',
-          builder: (context, state) => const LoginPage(),
-        ),
+        GoRoute(path: 'login', builder: (context, state) => const LoginPage()),
         GoRoute(
           path: 'registration',
           builder: (context, state) => const RegistrationPage(),
@@ -38,10 +33,12 @@ final _router = GoRouter(
           path: 'forgot-password',
           builder: (context, state) => const ForgotPasswordPage(),
         ),
-        GoRoute(
-          path: 'home',
-          builder: (context, state) => const HomePage(),
-        ),
+      ],
+    ),
+    GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomePage(),
+      routes: [
         GoRoute(
           path: 'journal',
           builder: (context, state) => const JournalPage(),
@@ -53,39 +50,27 @@ final _router = GoRouter(
       ],
     ),
   ],
+  redirect: (context, state) {
+    final loggedIn = FirebaseAuth.instance.currentUser != null;
+    final loggingIn =
+        state.matchedLocation == '/login' ||
+        state.matchedLocation == '/registration' ||
+        state.matchedLocation == '/forgot-password';
+
+    if (!loggedIn) {
+      return loggingIn ? null : '/login';
+    }
+
+    if (loggingIn) {
+      return '/home';
+    }
+
+    return null;
+  },
 );
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  final PresenceService _presenceService = PresenceService();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _presenceService.initialize();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _presenceService.goOnline();
-    } else if (state == AppLifecycleState.paused) {
-      _presenceService.goOffline();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +78,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       routerConfig: _router,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
     );
   }
 }

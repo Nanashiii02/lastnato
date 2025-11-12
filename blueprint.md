@@ -15,7 +15,7 @@ This document outlines the design, features, and development plan for the Flutte
 *   **Registration Page:** A registration page (`RegistrationPage`) for new users to create an account.
 *   **Forgot Password:** Users can reset their password via a link sent to their email address. This is handled by a new `ForgotPasswordPage` and the `sendPasswordResetEmail` method in `AuthService`.
 *   **Loading Indicators:** The login and registration pages now display a loading indicator during the authentication process to provide better user feedback.
-*   **Optimized Registration:** The user creation process is now faster as it no longer waits for the initial user data to be written to the Realtime Database.
+*   **Optimized Registration:** The user creation process is now faster as it no longer waits for the initial user data to be written to the initial user data to be written to the Realtime Database.
 
 ### Firestore
 

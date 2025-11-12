@@ -31,10 +31,7 @@ class LoginPageState extends State<LoginPage> {
                 children: [
                   const Text(
                     'SIGN IN',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 40),
                   TextFormField(
@@ -86,18 +83,22 @@ class LoginPageState extends State<LoginPage> {
                                   _isLoading = true;
                                 });
                                 try {
-                                  final user =
-                                      await _authService.signInWithEmailAndPassword(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
+                                  final user = await _authService
+                                      .signInWithEmailAndPassword(
+                                        _emailController.text,
+                                        _passwordController.text,
+                                      );
                                   if (context.mounted) {
                                     if (user != null) {
                                       context.go('/');
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         const SnackBar(
-                                          content: Text('Invalid email or password'),
+                                          content: Text(
+                                            'Invalid email or password',
+                                          ),
                                         ),
                                       );
                                     }
@@ -113,7 +114,10 @@ class LoginPageState extends State<LoginPage> {
                             },
                             child: const Text(
                               'LOGIN',
-                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

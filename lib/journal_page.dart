@@ -60,10 +60,7 @@ class _JournalPageState extends State<JournalPage> {
           const SizedBox(height: 10),
           Text(
             'Please log in to continue.',
-            style: GoogleFonts.lato(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: GoogleFonts.lato(fontSize: 16, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
@@ -111,7 +108,6 @@ class _JournalBodyState extends State<JournalBody> {
     });
   }
 
-
   Future<void> _addJournalEntry(String title, String text) async {
     if (text.isNotEmpty && title.isNotEmpty) {
       final entry = {
@@ -121,7 +117,10 @@ class _JournalBodyState extends State<JournalBody> {
       };
       try {
         await _journalCollection.add(entry);
-        developer.log('Journal entry added to Firestore.', name: 'journal.firestore');
+        developer.log(
+          'Journal entry added to Firestore.',
+          name: 'journal.firestore',
+        );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -131,7 +130,10 @@ class _JournalBodyState extends State<JournalBody> {
           );
         }
       } catch (error) {
-        developer.log('Failed to add journal entry: $error', name: 'journal.firestore');
+        developer.log(
+          'Failed to add journal entry: $error',
+          name: 'journal.firestore',
+        );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -144,9 +146,16 @@ class _JournalBodyState extends State<JournalBody> {
     }
   }
 
-  Future<void> _editJournalEntry(String docId, String newTitle, String newText) async {
+  Future<void> _editJournalEntry(
+    String docId,
+    String newTitle,
+    String newText,
+  ) async {
     try {
-      await _journalCollection.doc(docId).update({'title': newTitle, 'text': newText});
+      await _journalCollection.doc(docId).update({
+        'title': newTitle,
+        'text': newText,
+      });
       developer.log('Journal entry updated.', name: 'journal.firestore');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -157,7 +166,10 @@ class _JournalBodyState extends State<JournalBody> {
         );
       }
     } catch (error) {
-      developer.log('Failed to update journal entry: $error', name: 'journal.firestore');
+      developer.log(
+        'Failed to update journal entry: $error',
+        name: 'journal.firestore',
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -174,7 +186,9 @@ class _JournalBodyState extends State<JournalBody> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Entry?'),
-        content: const Text('Are you sure you want to delete this journal entry?'),
+        content: const Text(
+          'Are you sure you want to delete this journal entry?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -189,7 +203,7 @@ class _JournalBodyState extends State<JournalBody> {
     );
 
     if (confirmed == true) {
-       try {
+      try {
         await _journalCollection.doc(docId).delete();
         developer.log('Journal entry deleted.', name: 'journal.firestore');
         if (mounted) {
@@ -201,7 +215,10 @@ class _JournalBodyState extends State<JournalBody> {
           );
         }
       } catch (error) {
-        developer.log('Failed to delete journal entry: $error', name: 'journal.firestore');
+        developer.log(
+          'Failed to delete journal entry: $error',
+          name: 'journal.firestore',
+        );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -213,11 +230,16 @@ class _JournalBodyState extends State<JournalBody> {
       }
     }
   }
+
   void _showAddEntryDialog() {
     _showJournalEntryDialog();
   }
 
-  void _showJournalEntryDialog({String? docId, String? currentTitle, String? currentText}) {
+  void _showJournalEntryDialog({
+    String? docId,
+    String? currentTitle,
+    String? currentText,
+  }) {
     final titleController = TextEditingController(text: currentTitle);
     final textController = TextEditingController(text: currentText);
     final isEditing = docId != null;
@@ -275,18 +297,17 @@ class _JournalBodyState extends State<JournalBody> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: const Color(0xFFF0F0F0),
+      backgroundColor: const Color(0xFFF0F0F0),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-             Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AnimatedOpacity(
@@ -379,10 +400,15 @@ class _JournalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: journalCollection.orderBy('timestamp', descending: true).snapshots(),
+      stream: journalCollection
+          .orderBy('timestamp', descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          developer.log('Firestore error: ${snapshot.error}', name: 'journal.firestore');
+          developer.log(
+            'Firestore error: ${snapshot.error}',
+            name: 'journal.firestore',
+          );
           return const Center(child: Text('Something went wrong.'));
         }
 
@@ -429,7 +455,7 @@ class _JournalListItem extends StatelessWidget {
     required this.onDelete,
   });
 
- @override
+  @override
   Widget build(BuildContext context) {
     final title = data['title'] as String? ?? 'No Title';
     final text = data['text'] as String? ?? 'No text available.';
@@ -458,7 +484,10 @@ class _JournalListItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -472,13 +501,21 @@ class _JournalListItem extends StatelessWidget {
                             color: Colors.blue.withAlpha((255 * 0.1).round()),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                          child: const Icon(
+                            Icons.edit,
+                            size: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       GestureDetector(
                         onTap: () => onDelete(docId),
-                        child: const Icon(Icons.delete_outline, size: 24, color: Colors.grey),
+                        child: const Icon(
+                          Icons.delete_outline,
+                          size: 24,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -498,7 +535,6 @@ class _JournalListItem extends StatelessWidget {
     );
   }
 }
-
 
 class _JournalDetailView extends StatelessWidget {
   final String docId;
@@ -541,30 +577,37 @@ class _JournalDetailView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
                       onPressed: onClose,
                     ),
-                     GestureDetector(
-                        onTap: () => onEdit(data),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withAlpha((255 * 0.1).round()),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(Icons.edit, size: 24, color: Colors.blue),
+                    GestureDetector(
+                      onTap: () => onEdit(data),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withAlpha((255 * 0.1).round()),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          size: 24,
+                          color: Colors.blue,
                         ),
                       ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Expanded(

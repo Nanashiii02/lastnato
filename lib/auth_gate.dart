@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import 'home_page.dart';
 import 'login_page.dart';
 
 class AuthGate extends StatelessWidget {
@@ -12,21 +12,12 @@ class AuthGate extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          // User is signed in, navigate to the home page
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/home');
-          });
-          // Return a placeholder while redirecting
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else {
-          // User is not signed in, show the login page
+        // User is not signed in
+        if (!snapshot.hasData) {
           return const LoginPage();
         }
+        // User is signed in
+        return const HomePage();
       },
     );
   }

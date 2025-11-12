@@ -52,9 +52,9 @@ class RegistrationPageState extends State<RegistrationPage> {
                           try {
                             final user = await _authService
                                 .createUserWithEmailAndPassword(
-                              _emailController.text,
-                              _passwordController.text,
-                            );
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
                             if (context.mounted) {
                               if (user != null) {
                                 context.go('/');

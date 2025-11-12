@@ -92,8 +92,11 @@ class WeatherPageState extends State<WeatherPage> {
     List<dynamic>? dailyForecast;
 
     try {
-      final weatherResponse = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$_apiKey&units=metric'));
+      final weatherResponse = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$_apiKey&units=metric',
+        ),
+      );
 
       if (weatherResponse.statusCode == 200) {
         weatherData = json.decode(weatherResponse.body);
@@ -105,8 +108,11 @@ class WeatherPageState extends State<WeatherPage> {
         return;
       }
 
-      final forecastResponse = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$_apiKey&units=metric'));
+      final forecastResponse = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$_apiKey&units=metric',
+        ),
+      );
 
       if (forecastResponse.statusCode == 200) {
         final forecastData = json.decode(forecastResponse.body)['list'];
@@ -145,7 +151,8 @@ class WeatherPageState extends State<WeatherPage> {
     final now = DateTime.now();
     return forecastList.where((forecast) {
       final date = DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000);
-      return date.isAfter(now) && date.isBefore(now.add(const Duration(hours: 24)));
+      return date.isAfter(now) &&
+          date.isBefore(now.add(const Duration(hours: 24)));
     }).toList();
   }
 
@@ -199,20 +206,30 @@ class WeatherPageState extends State<WeatherPage> {
       backgroundColor: const Color(0xFF343A40),
       body: SafeArea(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator(color: Colors.white))
+            ? const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              )
             : _errorMessage != null && weatherData == null
-                ? Center(
-                    child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ))
-                : _buildWeatherUI(weatherData, hourlyForecastData, dailyForecastData),
+            ? Center(
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              )
+            : _buildWeatherUI(
+                weatherData,
+                hourlyForecastData,
+                dailyForecastData,
+              ),
       ),
     );
   }
 
-  Widget _buildWeatherUI(Map<String, dynamic>? weatherData,
-      List<dynamic>? hourlyForecastData, List<dynamic>? dailyForecastData) {
+  Widget _buildWeatherUI(
+    Map<String, dynamic>? weatherData,
+    List<dynamic>? hourlyForecastData,
+    List<dynamic>? dailyForecastData,
+  ) {
     return Column(
       children: [
         _buildAppBar(),
@@ -260,7 +277,10 @@ class WeatherPageState extends State<WeatherPage> {
                 : Container(),
           ),
           IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search, color: Colors.white),
+            icon: Icon(
+              _isSearching ? Icons.close : Icons.search,
+              color: Colors.white,
+            ),
             onPressed: _toggleSearch,
           ),
         ],
@@ -283,7 +303,7 @@ class WeatherPageState extends State<WeatherPage> {
           Text(
             _city,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withAlpha(230),
               fontSize: 32,
               fontWeight: FontWeight.bold,
             ),
@@ -302,11 +322,18 @@ class WeatherPageState extends State<WeatherPage> {
           Text(
             '$temp°',
             style: const TextStyle(
-                color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 72,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Text(
             weather['description'].toUpperCase(),
-            style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 1.2),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              letterSpacing: 1.2,
+            ),
           ),
         ],
       ),
@@ -314,7 +341,9 @@ class WeatherPageState extends State<WeatherPage> {
   }
 
   Widget _buildForecastCard(
-      List<dynamic> hourlyForecastData, List<dynamic> dailyForecastData) {
+    List<dynamic> hourlyForecastData,
+    List<dynamic> dailyForecastData,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -326,7 +355,11 @@ class WeatherPageState extends State<WeatherPage> {
         children: [
           const Text(
             'HOURLY FORECAST',
-            style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 15),
           SizedBox(
@@ -337,8 +370,9 @@ class WeatherPageState extends State<WeatherPage> {
               itemBuilder: (context, index) {
                 final forecast = hourlyForecastData[index];
                 return _buildHourlyForecastItem(
-                  time: DateFormat.j()
-                      .format(DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000)),
+                  time: DateFormat.j().format(
+                    DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000),
+                  ),
                   icon: forecast['weather'][0]['icon'],
                   temp: forecast['main']['temp'].round(),
                 );
@@ -348,7 +382,11 @@ class WeatherPageState extends State<WeatherPage> {
           const Divider(color: Colors.white24, height: 40),
           const Text(
             '5-DAY FORECAST',
-            style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 15),
           SizedBox(
@@ -358,13 +396,18 @@ class WeatherPageState extends State<WeatherPage> {
               itemCount: dailyForecastData.length,
               itemBuilder: (context, index) {
                 final forecast = dailyForecastData[index];
-                final isToday = DateFormat('yyyy-MM-dd').format(DateTime.now()) ==
-                    DateFormat('yyyy-MM-dd')
-                        .format(DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000));
+                final isToday =
+                    DateFormat('yyyy-MM-dd').format(DateTime.now()) ==
+                    DateFormat('yyyy-MM-dd').format(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        forecast['dt'] * 1000,
+                      ),
+                    );
 
                 return _buildDailyForecastItem(
-                  day: DateFormat('E')
-                      .format(DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000)),
+                  day: DateFormat('E').format(
+                    DateTime.fromMillisecondsSinceEpoch(forecast['dt'] * 1000),
+                  ),
                   icon: forecast['weather']['icon'],
                   tempMax: forecast['temp_max'].round(),
                   tempMin: forecast['temp_min'].round(),
@@ -378,7 +421,11 @@ class WeatherPageState extends State<WeatherPage> {
     );
   }
 
-  Widget _buildHourlyForecastItem({required String time, required String icon, required int temp}) {
+  Widget _buildHourlyForecastItem({
+    required String time,
+    required String icon,
+    required int temp,
+  }) {
     return Container(
       width: 80,
       padding: const EdgeInsets.all(8.0),
@@ -393,30 +440,43 @@ class WeatherPageState extends State<WeatherPage> {
             height: 40,
           ),
           const SizedBox(height: 8),
-          Text('$temp°', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          Text(
+            '$temp°',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDailyForecastItem(
-      {required String day,
-      required String icon,
-      required int tempMax,
-      required int tempMin,
-      bool isSelected = false}) {
+  Widget _buildDailyForecastItem({
+    required String day,
+    required String icon,
+    required int tempMax,
+    required int tempMin,
+    bool isSelected = false,
+  }) {
     return Container(
       width: 80,
       margin: const EdgeInsets.only(right: 10),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
+        color: isSelected ? Colors.white.withAlpha(38) : Colors.transparent,
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(day.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          Text(
+            day.toUpperCase(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 8),
           Image.network(
             'https://openweathermap.org/img/wn/$icon@2x.png',
