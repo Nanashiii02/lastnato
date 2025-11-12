@@ -165,11 +165,9 @@ class _HomePageState extends State<HomePage> {
     randomQuote = bibleQuotes[Random().nextInt(bibleQuotes.length)];
   }
 
-  Future<void> _signOutAndNavigate() async {
+  // When the user signs out, GoRouter's refreshListenable will handle the redirect automatically.
+  Future<void> _signOut() async {
     await _authService.signOut();
-    if (mounted) {
-      context.go('/');
-    }
   }
 
   @override
@@ -195,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: _signOutAndNavigate,
+                    onTap: _signOut,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,

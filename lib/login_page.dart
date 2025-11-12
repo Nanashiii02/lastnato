@@ -88,20 +88,15 @@ class LoginPageState extends State<LoginPage> {
                                         _emailController.text,
                                         _passwordController.text,
                                       );
-                                  if (context.mounted) {
-                                    if (user != null) {
-                                      context.go('/');
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                  // After login, GoRouter's refreshListenable will handle the redirect automatically.
+                                  // We just need to handle the error case.
+                                  if (user == null && context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                      .showSnackBar(
                                         const SnackBar(
-                                          content: Text(
-                                            'Invalid email or password',
-                                          ),
+                                          content: Text('Invalid email or password'),
                                         ),
                                       );
-                                    }
                                   }
                                 } finally {
                                   if (mounted) {
